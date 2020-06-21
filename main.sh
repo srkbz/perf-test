@@ -6,8 +6,10 @@ function main {
     ensure-deps
     printf "\n"
 
+    mkdir -p ./perf-results
+
     printf ":: Running CPU bench..."
-    cpu-bench > cpu-result.tsv
+    cpu-bench > ./perf-results/cpu-result.tsv
     printf " OK\n"
 
     printf "\n:: DONE\n"
