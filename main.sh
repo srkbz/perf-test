@@ -11,8 +11,6 @@ function main {
     printf ":: Running CPU bench..."
     cpu-bench > ./perf-results/cpu-result.tsv
     printf " OK\n"
-
-    printf "\n:: DONE\n"
 }
 
 function ensure-deps {
