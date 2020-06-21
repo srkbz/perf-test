@@ -2,7 +2,22 @@
 set -euo pipefail
 
 function main {
+    printf ":: Ensuring dependencies are installed\n"
+    ensure-deps
+    printf "\n"
+
+    printf ":: Running CPU bench..."
     cpu-bench > cpu-result.tsv
+    printf " OK\n"
+
+    printf "\n:: DONE\n"
+}
+
+function ensure-deps {
+    command -v sysbench >/dev/null 2>&1 || {
+        printf ":::: Installing sysbench"
+        sudo apt-get install -y sysbench
+    }
 }
 
 function cpu-bench {
