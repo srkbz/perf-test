@@ -6,7 +6,7 @@ function main {
 }
 
 function cpu-bench {
-    sysbench cpu run \
+    sysbench cpu run --cpu-max-prime=50000 \
         | grep -E "(events per second:|total time:|total number of events:|min:|avg:|max:|95th percentile:|sum:|events \(avg\/stddev\):|execution time \(avg\/stddev\):)" \
         | while IFS=":" read -r rawKey rawVal; do
             key="$(trim "$rawKey")"
