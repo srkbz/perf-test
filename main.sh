@@ -11,6 +11,10 @@ function main {
     printf ":: Running CPU bench..."
     cpu-bench > ./perf-results/cpu-result.tsv
     printf " OK\n"
+
+    printf ":: Running Memory bench..."
+    memory-bench > ./perf-results/memory-result.tsv
+    printf " OK\n"
 }
 
 function ensure-deps {
@@ -23,6 +27,16 @@ function ensure-deps {
 function cpu-bench {
     sysbench cpu run --cpu-max-prime=50000 \
         | grep -E "(events per second:|total time:|total number of events:|min:|avg:|max:|95th percentile:|sum:|events \(avg\/stddev\):|execution time \(avg\/stddev\):)" \
+        | while IFS=":" read -r rawKey rawVal; do
+            key="$(trim "$rawKey")"
+            val="$(trim "$rawVal")"
+            printf "%s\t%s\n" "$key" "$val"
+        done
+}
+
+function memory-bench {
+    sysbench memory run \
+        | grep -E "(total time:|total number of events:|min:|avg:|max:|95th percentile:|sum:|events \(avg\/stddev\):|execution time \(avg\/stddev\):)" \
         | while IFS=":" read -r rawKey rawVal; do
             key="$(trim "$rawKey")"
             val="$(trim "$rawVal")"
