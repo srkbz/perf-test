@@ -1,47 +1,151 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
+ROOT="$(realpath $(dirname ${BASH_SOURCE[0]}))"
+
+PERF_RESULTS="${ROOT}/.perf-test/results"
+PERF_WORKDIR="${ROOT}/.perf-test/workdir"
+
 function main {
-    printf ":: Ensuring dependencies are installed\n"
+    mkdir -p $PERF_RESULTS
+    mkdir -p $PERF_WORKDIR
+
     ensure-deps
-    printf "\n"
 
-    mkdir -p ./perf-results
-
-    printf ":: Running CPU bench..."
-    cpu-bench > ./perf-results/cpu-result.tsv
-    printf " OK\n"
-
-    printf ":: Running Memory bench..."
-    memory-bench > ./perf-results/memory-result.tsv
-    printf " OK\n"
+    cpu-bench
+    memory-bench
+    fileio-sequential-read-bench
+    fileio-sequential-write-bench
+    fileio-sequential-rewrite-bench
+    fileio-random-read-write-bench
 }
 
 function ensure-deps {
+    printf ":: Ensuring dependencies are installed\n"
     command -v sysbench >/dev/null 2>&1 || {
         printf ":::: Installing sysbench"
         sudo apt-get install -y sysbench
     }
+    printf "\n"
 }
 
 function cpu-bench {
+    pre-bench "CPU"
     sysbench cpu run --cpu-max-prime=50000 \
-        | grep -E "(events per second:|total time:|total number of events:|min:|avg:|max:|95th percentile:|sum:|events \(avg\/stddev\):|execution time \(avg\/stddev\):)" \
-        | while IFS=":" read -r rawKey rawVal; do
-            key="$(trim "$rawKey")"
-            val="$(trim "$rawVal")"
-            printf "%s\t%s\n" "$key" "$val"
-        done
+        | read-values \
+            "events per second" \
+            "total time" \
+            "total number of events" \
+            "min" \
+            "avg" \
+            "max" \
+            "95th percentile" \
+            "sum" \
+            "events \(avg/stddev\)" \
+            "execution time \(avg/stddev\)" \
+        > "$PERF_RESULTS/cpu-results.tsv"
+    post-bench
 }
 
 function memory-bench {
+    pre-bench "Memory"
     sysbench memory run \
-        | grep -E "(total time:|total number of events:|min:|avg:|max:|95th percentile:|sum:|events \(avg\/stddev\):|execution time \(avg\/stddev\):)" \
-        | while IFS=":" read -r rawKey rawVal; do
-            key="$(trim "$rawKey")"
-            val="$(trim "$rawVal")"
-            printf "%s\t%s\n" "$key" "$val"
-        done
+        | read-values \
+            "total time" \
+            "total number of events" \
+            "min" \
+            "avg" \
+            "max" \
+            "95th percentile" \
+            "sum" \
+            "events \(avg/stddev\)" \
+            "execution time \(avg/stddev\)" \
+        > "$PERF_RESULTS/memory-results.tsv"
+    post-bench
+}
+
+function fileio-sequential-read-bench {
+    pre-bench "FileIO Sequential Read"
+    sysbench fileio prepare --file-test-mode=seqrd > /dev/null
+    sysbench fileio run --file-test-mode=seqrd \
+        | read-fileio-values \
+        > "$PERF_RESULTS/fileio-sequential-read-results.tsv"
+    post-bench
+}
+
+function fileio-sequential-write-bench {
+    pre-bench "FileIO Sequential Write"
+    sysbench fileio run --file-test-mode=seqwr \
+        | read-fileio-values \
+        > "$PERF_RESULTS/fileio-sequential-write-results.tsv"
+    post-bench
+}
+
+function fileio-sequential-rewrite-bench {
+    pre-bench "FileIO Sequential Rewrite"
+    sysbench fileio prepare --file-test-mode=seqrewr > /dev/null
+    sysbench fileio run --file-test-mode=seqrewr \
+        | read-fileio-values \
+        > "$PERF_RESULTS/fileio-sequential-rewrite-results.tsv"
+    post-bench
+}
+
+function fileio-random-read-write-bench {
+    pre-bench "FileIO Random Read/Write"
+    sysbench fileio prepare --file-test-mode=rndrw > /dev/null
+    sysbench fileio run --file-test-mode=rndrw \
+        | read-fileio-values \
+        > "$PERF_RESULTS/fileio-random-read-write-results.tsv"
+    post-bench
+}
+
+function read-fileio-values {
+    read-values \
+        "reads/s" \
+        "writes/s" \
+        "fsyncs/s" \
+        "read, MiB/s" \
+        "written, MiB/s" \
+        "total time" \
+        "total number of events" \
+        "min" \
+        "avg" \
+        "max" \
+        "95th percentile" \
+        "sum" \
+        "events \(avg/stddev\)" \
+        "execution time \(avg/stddev\)"
+}
+
+function read-values {
+    filter "$@" | while IFS=":" read -r rawKey rawVal; do
+        key="$(trim "$rawKey")"
+        val="$(trim "$rawVal")"
+        printf "%s\t%s\n" "$key" "$val"
+    done
+}
+
+function filter {
+    expression=$(printf "%s:|" "$@")
+    grep -E "(${expression::-1})"
+}
+
+function join_by {
+    local IFS="$1"
+    shift
+    echo "$*";
+}
+
+function pre-bench {
+    cd $PERF_WORKDIR
+    rm -rf ./*
+    printf ":: Running bench: ${1}..."
+}
+
+function post-bench {
+    printf " OK\n"
+    rm -rf ./*
+    cd $ROOT
 }
 
 function trim {
