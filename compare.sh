@@ -6,20 +6,126 @@ ROOT="$(realpath $(dirname ${BASH_SOURCE[0]}))"
 function main {
     line "# Performance Comparison Report"
     line
-    cpu-single-core-section
+
+    cpu-section
+    memory-section
+    fileio-section
 }
 
-function cpu-single-core-section {
-    line "## CPU Single Core"
+function cpu-section {
+    line "## CPU"
     line
+    line "### Single Core"
     cpu-single-core-table
+    line
+    line "### All Cores"
+    cpu-all-cores-table
+    line
 }
 
 function cpu-single-core-table {
-    thead "subject" "run time" "events/s"
+    thead "subject" "run time" "events" "events/s"
     get-data "cpu-single-core" \
             "total time" \
+            "total number of events" \
             "events per second" \
+        | sort-data -k4 -rn \
+        | tbody
+}
+
+function cpu-all-cores-table {
+    thead "subject" "run time" "threads" "events" "events/s"
+    get-data "cpu-all-cores" \
+            "total time" \
+            "threads" \
+            "total number of events" \
+            "events per second" \
+        | sort-data -k5 -rn \
+        | tbody
+}
+
+function memory-section {
+    line "## Memory"
+    line
+    memory-table
+    line
+}
+
+function memory-table {
+    thead "subject" "run time" "events"
+    get-data "memory" \
+            "total time" \
+            "total number of events" \
+        | sort-data -k3 -rn \
+        | tbody
+}
+
+function fileio-section {
+    line "## FileIO"
+    line
+    
+    line "### Sequential Read"
+    fileio-sequential-read-table
+    line
+
+    line "### Sequential Write"
+    fileio-sequential-write-table
+    line
+
+    line "### Sequential Rewrite"
+    fileio-sequential-rewrite-table
+    line
+
+    line "### Random Read/Write"
+    fileio-random-read-write-table
+    line
+}
+
+function fileio-sequential-read-table {
+    thead "subject" "run time" "events" "reads/s" "reads (MiB/s)"
+    get-data "fileio-sequential-read" \
+            "total time" \
+            "total number of events" \
+            "reads/s" \
+            "read, MiB/s" \
+        | sort-data -k5 -rn \
+        | tbody
+}
+
+function fileio-sequential-write-table {
+    thead "subject" "run time" "events" "writes/s" "fsyncs/s" "writes (MiB/s)"
+    get-data "fileio-sequential-write" \
+            "total time" \
+            "total number of events" \
+            "writes/s" \
+            "fsyncs/s" \
+            "written, MiB/s" \
+        | sort-data -k6 -rn \
+        | tbody
+}
+
+function fileio-sequential-rewrite-table {
+    thead "subject" "run time" "events" "writes/s" "fsyncs/s" "writes (MiB/s)"
+    get-data "fileio-sequential-rewrite" \
+            "total time" \
+            "total number of events" \
+            "writes/s" \
+            "fsyncs/s" \
+            "written, MiB/s" \
+        | sort-data -k6 -rn \
+        | tbody
+}
+
+function fileio-random-read-write-table {
+    thead "subject" "run time" "events" "reads/s" "writes/s" "fsyncs/s" "reads (MiB/s)" "writes (MiB/s)"
+    get-data "fileio-random-read-write" \
+            "total time" \
+            "total number of events" \
+            "reads/s" \
+            "writes/s" \
+            "fsyncs/s" \
+            "read, MiB/s" \
+            "written, MiB/s" \
         | sort-data -k3 -rn \
         | tbody
 }
