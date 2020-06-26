@@ -132,8 +132,9 @@ function fileio-random-read-write-table {
 
 function get-data {
     test="$1"
+    keys=("${@:2}")
     for subject in $(get-subjects); do
-        data-row "${subject}" "$test" "${@:2}"
+        data-row "${subject}" "$test" "${keys[@]}"
     done
 }
 
@@ -153,9 +154,10 @@ function get-result-key {
 function data-row {
     subject="$1"
     test="$2"
+    keys=("${@:3}")
 
     printf "%s" "${subject}"
-    for key in "${@:3}"; do
+    for key in "${keys[@]}"; do
         printf "\t%s" "$(get-result-key "$subject" "$test" "$key")"
     done
     printf "\n"
