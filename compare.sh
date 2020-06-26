@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-ROOT="$(realpath $(dirname ${BASH_SOURCE[0]}))"
+ROOT="$(realpath "$(dirname "${BASH_SOURCE[0]}")")"
 
 function main {
     line "# Performance Comparison Report"
@@ -145,8 +145,7 @@ function get-result-key {
     subjectName="$1"
     test="$2"
     key="$3"
-    cat "${ROOT}/subjects/${subjectName}/${test}-results.tsv" \
-        | grep "$key" \
+    < "${ROOT}/subjects/${subjectName}/${test}-results.tsv" grep "$key" \
         | tr "\t" "\n" \
         | tail -n1
 }
@@ -155,9 +154,9 @@ function data-row {
     subject="$1"
     test="$2"
 
-    printf "${subject}"
+    printf "%s" "${subject}"
     for key in "${@:3}"; do
-        printf "\t%s" $(get-result-key "$subject" "$test" "$key")
+        printf "\t%s" "$(get-result-key "$subject" "$test" "$key")"
     done
     printf "\n"
 }

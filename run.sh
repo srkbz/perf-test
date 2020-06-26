@@ -1,14 +1,14 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-ROOT="$(realpath $(dirname ${BASH_SOURCE[0]}))"
+ROOT="$(realpath "$(dirname "${BASH_SOURCE[0]}")")"
 
 PERF_RESULTS="${ROOT}/.perf-test/results"
 PERF_WORKDIR="${ROOT}/.perf-test/workdir"
 
 function main {
-    mkdir -p $PERF_RESULTS
-    mkdir -p $PERF_WORKDIR
+    mkdir -p "$PERF_RESULTS"
+    mkdir -p "$PERF_WORKDIR"
 
     ensure-deps
 
@@ -41,7 +41,7 @@ function cpu-single-core-bench {
 function cpu-all-cores-bench {
     pre-bench "CPU All Cores"
     printf "threads\t%s\n" "$(nproc)" > "$PERF_RESULTS/cpu-all-cores-results.tsv"
-    sysbench cpu run --threads=$(nproc) --cpu-max-prime=50000 \
+    sysbench cpu run --threads="$(nproc)" --cpu-max-prime=50000 \
         | read-cpu-values \
         >> "$PERF_RESULTS/cpu-all-cores-results.tsv"
     post-bench
@@ -49,7 +49,7 @@ function cpu-all-cores-bench {
 
 function memory-bench {
     pre-bench "Memory"
-    sysbench memory run --threads=$(nproc) \
+    sysbench memory run --threads="$(nproc)" \
         | read-values \
             "total time" \
             "total number of events" \
@@ -67,7 +67,7 @@ function memory-bench {
 function fileio-sequential-read-bench {
     pre-bench "FileIO Sequential Read"
     sysbench fileio prepare --file-test-mode=seqrd > /dev/null
-    sysbench fileio run --threads=$(nproc) --file-test-mode=seqrd \
+    sysbench fileio run --threads="$(nproc)" --file-test-mode=seqrd \
         | read-fileio-values \
         > "$PERF_RESULTS/fileio-sequential-read-results.tsv"
     post-bench
@@ -75,7 +75,7 @@ function fileio-sequential-read-bench {
 
 function fileio-sequential-write-bench {
     pre-bench "FileIO Sequential Write"
-    sysbench fileio run --threads=$(nproc) --file-test-mode=seqwr \
+    sysbench fileio run --threads="$(nproc)" --file-test-mode=seqwr \
         | read-fileio-values \
         > "$PERF_RESULTS/fileio-sequential-write-results.tsv"
     post-bench
@@ -84,7 +84,7 @@ function fileio-sequential-write-bench {
 function fileio-sequential-rewrite-bench {
     pre-bench "FileIO Sequential Rewrite"
     sysbench fileio prepare --file-test-mode=seqrewr > /dev/null
-    sysbench fileio run --threads=$(nproc) --file-test-mode=seqrewr \
+    sysbench fileio run --threads="$(nproc)" --file-test-mode=seqrewr \
         | read-fileio-values \
         > "$PERF_RESULTS/fileio-sequential-rewrite-results.tsv"
     post-bench
@@ -93,7 +93,7 @@ function fileio-sequential-rewrite-bench {
 function fileio-random-read-write-bench {
     pre-bench "FileIO Random Read/Write"
     sysbench fileio prepare --file-test-mode=rndrw > /dev/null
-    sysbench fileio run --threads=$(nproc) --file-test-mode=rndrw \
+    sysbench fileio run --threads="$(nproc)" --file-test-mode=rndrw \
         | read-fileio-values \
         > "$PERF_RESULTS/fileio-random-read-write-results.tsv"
     post-bench
@@ -151,16 +151,16 @@ function join_by {
 }
 
 function pre-bench {
-    cd $PERF_WORKDIR
+    cd "$PERF_WORKDIR"
     rm -rf ./*
-    printf ":: Running bench: ${1}..."
+    printf ":: Running bench: %s..." "$1"
     sleep 10
 }
 
 function post-bench {
     printf " OK\n"
     rm -rf ./*
-    cd $ROOT
+    cd "$ROOT"
 }
 
 function trim {
