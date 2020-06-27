@@ -1,0 +1,7 @@
+provider	Hetzner
+cores	2
+memory	8 gb
+storage	80 gb
+bandwidth	n/s
+traffic	20 tb
+price	10.77€/mo (IVA incl.)

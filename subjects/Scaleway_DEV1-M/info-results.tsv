@@ -1,0 +1,7 @@
+provider	Scaleway
+cores	3
+memory	4 gb
+storage	40 gb
+bandwidth	300 Mbps
+traffic	n/s
+price	9.67€/mo (7.99€ + IVA 21%)

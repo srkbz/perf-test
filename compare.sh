@@ -7,9 +7,17 @@ function main {
     line "# Performance Comparison Report"
     line
 
+    info-section
     cpu-section
     memory-section
     fileio-section
+}
+
+function info-section {
+    thead "subject" "provider" "memory" "storage" "bandwidth" "traffic" "price"
+    get-data "info" \
+            "provider" "memory" "storage" "bandwidth" "traffic" "price" \
+        | tbody
 }
 
 function cpu-section {

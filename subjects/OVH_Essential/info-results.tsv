@@ -1,0 +1,7 @@
+provider	OVH
+cores	2
+memory	4 gb
+storage	80 gb
+bandwidth	500 Mbps
+traffic	unlimited
+price	12.10€/mo (10€ + IVA 21%)
