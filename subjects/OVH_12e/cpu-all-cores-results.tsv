@@ -1,0 +1,11 @@
+threads	2
+events per second	153.98
+total time	10.0081s
+total number of events	1542
+min	12.44
+avg	12.98
+max	22.57
+95th percentile	13.95
+sum	20007.50
+events (avg/stddev)	771.0000/0.00
+execution time (avg/stddev)	10.0037/0.00

@@ -1,0 +1,14 @@
+reads/s	539022.08
+writes/s	0.00
+fsyncs/s	0.00
+read, MiB/s	8422.22
+written, MiB/s	0.00
+total time	10.0002s
+total number of events	5391680
+min	0.00
+avg	0.01
+max	24.01
+95th percentile	0.01
+sum	27070.49
+events (avg/stddev)	1797226.6667/27369.92
+execution time (avg/stddev)	9.0235/0.02

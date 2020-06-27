@@ -1,0 +1,10 @@
+events per second	105.96
+total time	10.0087s
+total number of events	1061
+min	8.44
+avg	9.43
+max	20.28
+95th percentile	9.91
+sum	10005.29
+events (avg/stddev)	1061.0000/0.00
+execution time (avg/stddev)	10.0053/0.00
