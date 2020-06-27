@@ -1,7 +1,8 @@
-provider	Hetzner
+provider	Hetzner Nuremberg
 cores	2
 memory	8 gb
 storage	80 gb
 bandwidth	n/s
 traffic	20 tb
+ping	44 ms
 price	10.77€/mo (IVA incl.)

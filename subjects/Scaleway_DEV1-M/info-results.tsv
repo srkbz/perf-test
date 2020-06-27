@@ -1,7 +1,8 @@
-provider	Scaleway
+provider	Scaleway Paris
 cores	3
 memory	4 gb
 storage	40 gb
 bandwidth	300 Mbps
 traffic	n/s
+ping	32 ms
 price	9.67€/mo (7.99€ + IVA 21%)

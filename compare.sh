@@ -14,9 +14,9 @@ function main {
 }
 
 function info-section {
-    thead "subject" "provider" "memory" "storage" "bandwidth" "traffic" "price"
+    thead "subject" "provider" "memory" "storage" "bandwidth" "traffic" "ping" "price"
     get-data "info" \
-            "provider" "memory" "storage" "bandwidth" "traffic" "price" \
+            "provider" "memory" "storage" "bandwidth" "traffic" "ping" "price" \
         | tbody
 }
 

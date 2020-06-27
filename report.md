@@ -1,11 +1,11 @@
 # Performance Comparison Report
 
-|subject|provider|memory|storage|bandwidth|traffic|price|
-|-|-|-|-|-|-|-|
-|Hetzner_CP31|Hetzner|8 gb|80 gb|n/s|20 tb|10.77€/mo (IVA incl.)|
-|Hetzner_CPX21|Hetzner|4 gb|80 gb|n/s|20 tb|8.35€/mo (IVA incl.)|
-|OVH_Essential|OVH|4 gb|80 gb|500 Mbps|unlimited|12.10€/mo (10€ + IVA 21%)|
-|Scaleway_DEV1-M|Scaleway|4 gb|40 gb|300 Mbps|n/s|9.67€/mo (7.99€ + IVA 21%)|
+|subject|provider|memory|storage|bandwidth|traffic|ping|price|
+|-|-|-|-|-|-|-|-|
+|Hetzner_CP31|Hetzner Nuremberg|8 gb|80 gb|n/s|20 tb|44 ms|10.77€/mo (IVA incl.)|
+|Hetzner_CPX21|Hetzner Nuremberg|4 gb|80 gb|n/s|20 tb|44 ms|8.35€/mo (IVA incl.)|
+|OVH_Essential|OVH Strasbourg|4 gb|80 gb|500 Mbps|unlimited|40 ms|12.10€/mo (10€ + IVA 21%)|
+|Scaleway_DEV1-M|Scaleway Paris|4 gb|40 gb|300 Mbps|n/s|32 ms|9.67€/mo (7.99€ + IVA 21%)|
 ## CPU
 
 ### Single Core
